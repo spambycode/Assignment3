@@ -1,6 +1,15 @@
-﻿/* PROJECT:  Asign 1 (C#)            PROGRAM: PrettyPrint (AKA ShowFilesUtility)
- * AUTHOR: George Karaszi   
- *******************************************************************************/
+﻿/* PROJECT: Asign 2 (C#) PROGRAM: PrettyPrint (AKA ShowFilesUtility)
+* AUTHOR: George Karaszi 10-4-2013
+* FILE ACCESSED:
+* (INPUT) MainData.bin
+* (INPUT) MainDataCollisions.bin
+* (OUTPUT) log.txt
+*
+* USEAGE: To access and showcase the data stored within binaray files.
+* Quick run of the mill looping structure that will loops till
+* the end of the file, collecting information and displaying it
+* in a formatted matter.
+*******************************************************************************/
 
 using System;
 using System.IO;
@@ -11,166 +20,119 @@ namespace PrettyPrintUtility
 {
     public class PrettyPrintUtility
     {
-        static FileStream mainDataFile;
-        static List<string> RecordList;
-        static int _sizeOfHeaderRec = 3;
-        static int _sizeOfDataRec = 71;
+        static FileStream fMainDataFile;
+        static FileStream fCollisionDataFile;
+        static BinaryReader bMainDataFileReader;
+        static BinaryReader bCollisionDataFileReader;
+        static int _sizeOfHeaderRec = sizeof(short) * 2;
+        static int _sizeOfDataRec = 3 + 17 + 12 + sizeof(int) +
+                                    sizeof(short) + sizeof(long) +
+                                    sizeof(float) + sizeof(int) +
+                                    sizeof(short);
+
+        static short nCol; //Number of collisions.
+        static short nRec; //Number of records.
+
 
         public static void Main(string[] args)
         {
-            if (File.Exists("MainData.txt"))
-            {
-                RecordList = new List<string>();
-                mainDataFile = new FileStream("MainData.txt", FileMode.Open);
-                HandleDataFile();
-                PrintResults();
-                FinishUp();
 
-            }
-            else
-            {
-                Console.WriteLine("Error MainData.txt does not exist!");
-            }
-          
+            fMainDataFile = new FileStream("MainData.bin", FileMode.Open);
+            bMainDataFileReader = new BinaryReader(fMainDataFile);
+            nRec = (short)(bMainDataFileReader.ReadInt16() - 1);
+            nCol = (short)(bMainDataFileReader.ReadInt16() - 1);
+
+
+            fCollisionDataFile = new FileStream("MainDataCollision.bin", FileMode.Open);
+            bCollisionDataFileReader = new BinaryReader(fCollisionDataFile);
+
+            string[] MainRecordList = ReadFile(bMainDataFileReader, _sizeOfHeaderRec);
+            string[] CollisionRecordList = ReadFile(bCollisionDataFileReader, 0);
+
+            PrintResults(MainRecordList, CollisionRecordList);
+            FinishUp();
+
         }
 
-        private static void FinishUp()
-        {
-            mainDataFile.Close();
-        }
-
-        //------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
         /// <summary>
-        /// Handles the main data file and its records
+        /// Loop through and store all viable records into a array
         /// </summary>
-        private static void HandleDataFile()
+        /// <param name="fileReader">Current binary reader for the file being accessed</param>
+        /// <param name="headerLength">Length (in bytes) of the header file</param>
+        /// <returns>An array of formatted records ready to be displayed</returns>
+
+        private static string[] ReadFile(BinaryReader fileReader, int headerLength)
         {
-            int RecordCount = ReadHeaderRec(); //Amount of records in file
-            int id = 1;                        //Starting point in searching for ID's
-            int RRN = 0;                       //RRN of file location
-            byte[] QueryRecord;                //Record that was returned
+            char[] code; //Country code
+            char[] name; //Name of country
+            char[] continent; //What continent the country is located
+            int surfaceArea; //Size of the country
+            short yearOfIndep; //What year they went independent
+            long population; //Total population of the country
+            float lifeExpectancy; //The average time someone is alive in the country
+            int gnp; //Gross national product
+            short link;
+            int RRN = 1;
+            string formatRecord;
+            List<string> RecordCollection = new List<string>(); //List of formatted record strings
 
-            for(int i = 0; i < RecordCount;)
+            for (long pos = headerLength; pos < fileReader.BaseStream.Length; pos += _sizeOfDataRec, RRN++)
             {
-                RRN = CalculateRRN(id++);
-                QueryRecord = ReadOneRecord(RRN);
+                fileReader.BaseStream.Seek(pos, SeekOrigin.Begin);
 
-                //Check for empty record
-                if(QueryRecord[0] != 0)
+                code = fileReader.ReadChars(3);
+
+                if (code[0] == '\0')
                 {
-                    RecordList.Add(FormatRecord(Encoding.UTF8.GetString(QueryRecord)));
-                    ++i;
+                    formatRecord = "[" + Convert.ToString(RRN).PadLeft(3, '0') + "]".PadRight(2) + "Empty";
                 }
                 else
                 {
-                    RecordList.Add(string.Format("[{0}]".PadRight(7, ' ') +  
-                                "Empty", Convert.ToString(RRN).PadLeft(3, '0')));
+
+                    name = fileReader.ReadChars(17);
+                    continent = fileReader.ReadChars(12);
+                    surfaceArea = fileReader.ReadInt32();
+                    yearOfIndep = fileReader.ReadInt16();
+                    population = fileReader.ReadInt64();
+                    lifeExpectancy = fileReader.ReadSingle();
+                    gnp = fileReader.ReadInt32();
+                    link = fileReader.ReadInt16();
+
+
+                    formatRecord = "[" + Convert.ToString(RRN).PadLeft(3, '0') + "]".PadRight(2) +
+                                    new string(code).PadRight(6) +
+                                    new string(name).PadRight(18) +
+                                    new string(continent).PadRight(12) +
+                                    string.Format("{0:#,###,###.##}", surfaceArea).PadLeft(10) +
+                                    Convert.ToString(yearOfIndep).PadLeft(6).PadRight(7) +
+                                    string.Format("{0:#,###,###,###}", population).PadLeft(13).PadRight(12) +
+                                    string.Format("{0:0.0#}", lifeExpectancy).PadRight(1).PadLeft(5) +
+                                    string.Format("{0:#,###,###,###}", gnp).PadLeft(10) +
+                                    Convert.ToString(link).PadLeft(5);
                 }
+
+                RecordCollection.Add(formatRecord);
             }
 
+            return RecordCollection.ToArray();
+
         }
 
-        //-------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------
         /// <summary>
-        /// Returns the RRN value of the given parameter
+        /// Close all files that are open
         /// </summary>
-        /// <param name="id">ID of query record</param>
-        /// <returns></returns>
-        private static int CalculateRRN(int id)
+        private static void FinishUp()
         {
-            return id;
+            bMainDataFileReader.Close();
+            fMainDataFile.Close();
+
+            bCollisionDataFileReader.Close();
+            fCollisionDataFile.Close();
         }
 
-        //---------------------------------------------------------------------------
-        /// <summary>
-        /// Obtain the offset to where the file pointer needs to point
-        /// </summary>
-        /// <param name="RRN">An ID to what record that needs to be obtained</param>
-        /// <returns>offset to file positions</returns>
-        private static int CalculateByteOffSet(int RRN)
-        {
-            return _sizeOfHeaderRec + ((RRN - 1) * _sizeOfDataRec);
-        }
-
-
-        //------------------------------------------------------------------------------
-        /// <summary>
-        /// Reads one record using the RRN
-        /// </summary>
-        /// <param name="RRN">File Location of the record</param>
-        /// <returns>An array in byte form that came from the main data file</returns>
-        private static byte[] ReadOneRecord(int RRN)
-        {
-
-            byte[] recordData = new byte[_sizeOfDataRec];
-            int byteOffSet = CalculateByteOffSet(RRN);
-
-            mainDataFile.Seek(byteOffSet, SeekOrigin.Begin);
-            mainDataFile.Read(recordData, 0, recordData.Length);
-
-            return recordData;
-        }
-
-        //------------------------------------------------------------------------------
-        /// <summary>
-        /// Reads the header that contains the amount of records inside
-        /// </summary>
-        /// <returns>Record amount number</returns>
-
-        private static int ReadHeaderRec()
-        {
-            byte[] recordData = new byte[_sizeOfHeaderRec];
-
-            mainDataFile.Seek(0, SeekOrigin.Begin);
-            mainDataFile.Read(recordData, 0, recordData.Length);
-
-            return Convert.ToInt32(Encoding.UTF8.GetString(recordData));
-        }
-
-        //------------------------------------------------------------------------------
-        /// <summary>
-        /// Formates the string to de aligned with its header columns
-        /// </summary>
-        /// <param name="record">record from main data</param>
-        /// <returns>formatted string ready to be used</returns>
-        private static string FormatRecord(string record)
-        {
-            string id;               //ID of record
-            string code;             //Country code
-            string name;             //Name of country
-            string continent;        //What continent the country is located
-            string region;           //What region the country is located
-            string surfaceArea;      //Size of the country
-            string yearOfIndep;      //What year they went independent
-            string population;       //Total population of the country
-            string lifeExpectancy;   //The average time someone is alive in the country
-            int stringPos = 0;
-
-            //Split record
-            id             = GetSubStringRec(record, 3, ref stringPos);
-            code           = GetSubStringRec(record, 3, ref stringPos);
-            name           = GetSubStringRec(record, 17, ref stringPos);
-            continent      = GetSubStringRec(record, 11, ref stringPos);
-            region         = GetSubStringRec(record, 10, ref stringPos);
-            surfaceArea    = GetSubStringRec(record, 8, ref stringPos);
-            yearOfIndep    = GetSubStringRec(record, 5, ref stringPos); 
-            population     = GetSubStringRec(record, 10, ref stringPos);
-            lifeExpectancy = GetSubStringRec(record, 4, ref stringPos);
-
-
-
-
-            return   "[" + id + "]".PadRight(3, ' ') +
-                        id.PadRight(4, ' ') +
-                        code.PadRight(5, ' ')+
-                        name.PadRight(20, ' ') +
-                        continent.PadRight(18)+
-                        region.PadRight(15, ' ') +
-                        surfaceArea.PadRight(15, ' ') +
-                        yearOfIndep.PadRight(9, ' ') +
-                        population.PadRight(13, ' ') +
-                        lifeExpectancy;
-        }
 
 
         //------------------------------------------------------------------------------
@@ -181,54 +143,53 @@ namespace PrettyPrintUtility
         private static string FormatHeader()
         {
 
-            return      "[RRN]".PadRight(7, ' ') +
-                        "ID".PadRight(4, ' ') +
-                        "CODE".PadRight(5, ' ') +
-                        "NAME".PadRight(20, ' ') +
-                        "CONTINENT".PadRight(18, ' ') +
-                        "REGION".PadRight(15, ' ') +
-                        "AREA".PadRight(15, ' ') +
-                        "INDEP".PadRight(9, ' ') +
-                        "POPULATION".PadRight(13, ' ') +
-                        "L.EXP";
-        }
-
-        //------------------------------------------------------------------------------
-        /// <summary>
-        /// Split a string to get a necessary data field
-        /// </summary>
-        /// <param name="record">Full recorded wanted to split</param>
-        /// <param name="recordlength">Length of desired record</param>
-        /// <param name="strPosition">Where to start chopping</param>
-        /// <returns>new sub-string record</returns>
-        private static string GetSubStringRec(string record, int subRecordlength, ref int strPosition)
-        {
-            string subrec = record.Substring(strPosition, subRecordlength).Trim();
-            strPosition += subRecordlength;
-
-            return subrec;
+            return "[RRN]".PadRight(6) +
+                   "CODE".PadRight(6) +
+                   "NAME".PadRight(18, '-') +
+                   "CONTINENT".PadRight(12, '-') +
+                   "AREA".PadLeft(7, '-').PadRight(10, '-') +
+                   "INDEP".PadRight(6).PadLeft(7) +
+                   "POPULATION".PadLeft(12, '-').PadRight(13, '-') +
+                   "L.EX".PadRight(5).PadLeft(6) +
+                   "GNP".PadLeft(6, '-').PadRight(9, '-') +
+                   "LINK".PadLeft(5);
         }
 
         //------------------------------------------------------------------------------
         /// <summary>
         /// Print the results from the formatted text
         /// </summary>
-        private static void PrintResults()
+        private static void PrintResults(string[] MainDataList, string[] CollisionDataList)
         {
             StreamWriter logFile = new StreamWriter("Log.txt", true);
+            string header = FormatHeader();
 
             logFile.WriteLine("\n***************Pretty Print Start***************\n");
-            logFile.WriteLine(FormatHeader());
+            logFile.WriteLine("MAIN DATA - HOME AREA".PadRight(header.Length + 1, '*'));
+            logFile.WriteLine(header);
 
-            foreach (string s in RecordList)
+            foreach (string s in MainDataList)
             {
                 logFile.WriteLine(s);
             }
 
+            logFile.WriteLine("End".PadRight(header.Length + 1, '*'));
+            logFile.WriteLine();
+            logFile.WriteLine();
+            logFile.WriteLine("MAIN DATA - COLLISION AREA".PadRight(header.Length + 1, '*'));
+            logFile.WriteLine(FormatHeader());
+
+            foreach (string s in CollisionDataList)
+            {
+                logFile.WriteLine(s);
+            }
+            logFile.WriteLine("End".PadRight(header.Length + 1, '*'));
+            logFile.WriteLine();
+            logFile.WriteLine();
+            logFile.WriteLine("#Rec in Home Area: {0}, #Rec in Collision Area: {1}", nRec, nCol);
             logFile.WriteLine("\n**********End Of Pretty Print Utility**********\n");
 
             logFile.Close();
-
         }
 
     }

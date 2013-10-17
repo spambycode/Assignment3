@@ -148,6 +148,20 @@ namespace SharedClassLibrary
 
         //**************************** PRIVATE METHODS *****************************
 
+        private void IOT(int root)
+        {
+            if (root == -1)
+                return;
+            IOT(((BSTNode)_tree[root]).LChildPtr);
+            VisitNode((BSTNode)_tree[root]);
+            IOT(((BSTNode)_tree[root]).RChildPtr);
+        }
+
+        private void VisitNode(BSTNode currentNode)
+        {
+            //MainData Get RRN
+        }
+
         //--------------------------------------------------------------------------------
         /// <summary>
         /// Writes the current tree to a binary file that can be reinialized later
