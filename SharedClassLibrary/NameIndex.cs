@@ -54,6 +54,7 @@ namespace SharedClassLibrary
                 Array.Resize<Object>(ref _tree, _tree.Length + 1);
 
 
+                //Loop Through and find an empty location by name comparision
                 while (index != -1)
                 {
                     currentNode = (BSTNode)_tree[index];
@@ -72,9 +73,8 @@ namespace SharedClassLibrary
                     }
 
                 }
-            
 
-
+                //Find which node from its previous one searched, to place the new node in the tree.
                 if (currentNode.CompareTo(RD.NAME) > 0)
                 {
                     ((BSTNode)_tree[parentIndex]).RChildPtr = _counter;
@@ -86,15 +86,56 @@ namespace SharedClassLibrary
                     //insert Left
                 }
 
-                _tree[_counter++] = new BSTNode(RD);
+                _tree[_counter++] = new BSTNode(RD); //Asign new node to tree
             }
 
             return true;
         }
 
-
+        //-------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the the name by searching the tree.
+        /// </summary>
+        /// <param name="queryID">Name that wants to be seached</param>
         public void QueryByName(string queryID)
         {
+            int queryCounter = 0;
+            int index = 0;
+            bool QueryFound = false;
+            BSTNode currentNode = null;
+
+            if ((int)_tree[0] == -1)
+                return;
+
+            while (index != -1)
+            {
+                ++queryCounter;
+                currentNode = (BSTNode)_tree[index];
+
+                if(currentNode.CompareTo(queryID) == 0)
+                {
+                    //MainData GetData
+                    //Log(queryCounter Shit)
+                    QueryFound = true;
+                }
+                else if (currentNode.CompareTo(queryID) > 0)
+                {
+
+                    index = currentNode.RChildPtr;
+                    //RightNode Child
+                }
+                else 
+                {
+                    index = currentNode.LChildPtr;
+                    //LeftNode Child
+                }
+
+                if (QueryFound == false)
+                { }
+                    //Log Error nothing was found mathching
+
+                    //Log QueryShit counter stuff
+            }
 
         }
 
