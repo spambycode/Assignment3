@@ -20,6 +20,14 @@ namespace SharedClassLibrary
             RChildPtr = -1;
         }
 
+        public BSTNode(short LChild, string Key, short DRP, short RChild)
+        {
+            LChildPtr = LChild;
+            KeyValue = Key;
+            this.DRP = DRP;
+            RChildPtr = RChild;
+        }
+
         public int CompareTo(string value)
         {
             return value.ToUpper().CompareTo(KeyValue.ToUpper());

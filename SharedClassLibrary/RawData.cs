@@ -20,31 +20,10 @@ namespace SharedClassLibrary
         public string CODE { get; set; }
         public string NAME { get; set; }
         public string CONTINENT { get; set; }
-        public string REGION { get; set; }
-        public string SURFACEAREA { get; set; }
-        public string YEAROFINDEP { get; set; }
-        public string POPULATION { get; set; }
         public string LIFEEXPECTANCY { get; set; }
         
 
         //**************************** PUBLIC CONSTRUCTOR(S) ***********************
-
-        /// <summary>
-        /// Assign raw data via constructor.
-        /// </summary>
-        /// <param name="recordSplit">Split fields of record</param>
-        public RawData(string[] recordSplit)
-        {
-            ID = recordSplit[0];
-            CODE = recordSplit[1];
-            NAME = recordSplit[2];
-            CONTINENT = recordSplit[3];
-            REGION = recordSplit[4];
-            SURFACEAREA = recordSplit[5];
-            YEAROFINDEP = recordSplit[6];
-            POPULATION = recordSplit[7];
-            LIFEEXPECTANCY = recordSplit[8];
-        }
 
         public RawData(UserInterface LogFile, string filename)
         {
@@ -80,11 +59,7 @@ namespace SharedClassLibrary
                 CODE = split[1];
                 NAME = split[2];
                 CONTINENT = split[3];
-                REGION = split[4];
-                SURFACEAREA = split[5];
-                YEAROFINDEP = split[6];
-                POPULATION = split[7];
-                LIFEEXPECTANCY = split[8];
+                LIFEEXPECTANCY = split[4];
 
 
                 return false;
