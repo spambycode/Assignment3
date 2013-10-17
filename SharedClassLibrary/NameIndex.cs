@@ -19,12 +19,16 @@ namespace SharedClassLibrary
         private BinaryWriter _bIndexFileW;
         private BinaryReader _bIndexFileR;
         private FileStream _fIndexFile;
+        private MainData _mainData;
+        private UserInterface _log;
         //**************************** PUBLIC GET/SET METHODS **********************
 
 
         //**************************** PUBLIC CONSTRUCTOR(S) ***********************
-        public NameIndex()
+        public NameIndex(MainData MD, UserInterface log)
         {
+            _mainData = MD;
+            _log = log;
             _tree = new object[1];
             _tree[0] = -1;
 
@@ -141,28 +145,44 @@ namespace SharedClassLibrary
 
         public void ListByName()
         {
-
+            IOT(0);
         }
 
         
 
         //**************************** PRIVATE METHODS *****************************
 
-        private void IOT(int root)
+        //---------------------------------------------------------------------------------
+        /// <summary>
+        /// Recursive Structure that preforms a In-Order traversal of the tree and its leafs
+        /// </summary>
+        /// <param name="index">Index of the trees array</param>
+        private void IOT(int index)
         {
-            if (root == -1)
+           
+            if ((int)_tree[index] == -1)
                 return;
-            IOT(((BSTNode)_tree[root]).LChildPtr);
-            VisitNode((BSTNode)_tree[root]);
-            IOT(((BSTNode)_tree[root]).RChildPtr);
+            else if (index == -1)
+                return;
+
+            IOT(((BSTNode)_tree[index]).LChildPtr);
+            VisitNode((BSTNode)_tree[index]);
+            IOT(((BSTNode)_tree[index]).RChildPtr);
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sends the data over to mainData class and Get's the corresponding record that is
+        /// formatted for display.
+        /// </summary>
+        /// <param name="currentNode">The Node that needs to be grabbed from maindata</param>
         private void VisitNode(BSTNode currentNode)
         {
-            //MainData Get RRN
+            string DataLine = _mainData.GetThisData(currentNode.DRP);
+            _log.WriteToLog(DataLine);
         }
 
-        //--------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------
         /// <summary>
         /// Writes the current tree to a binary file that can be reinialized later
         /// </summary>
