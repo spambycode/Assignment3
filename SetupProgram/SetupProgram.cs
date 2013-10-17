@@ -36,11 +36,12 @@ namespace SetupProgram
             SharedClassLibrary.UserInterface UI = new UserInterface();
             SharedClassLibrary.RawData RD = new RawData(UI, FileName);
             SharedClassLibrary.MainData MD = new MainData(UI);
+            SharedClassLibrary.NameIndex NI = new NameIndex();
 
             UI.WriteToLog("\n***************Setup App Start***************\n");
             while (RD.ReadOneCountry() != true)
             {
-                if(MD.StoreOneCountry(RD))
+                if(NI.StoreOneCountry(RD))
                 {
                     RecordSuccess++;
                 }

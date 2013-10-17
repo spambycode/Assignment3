@@ -46,21 +46,13 @@ namespace UserApp
 
                 switch(command.Substring(0, 2))
                 {
-                    case "QI":   
-                        MD.QueryByID(QueryData(command));
+                    case "QN":
                         break;
-                    case "LI":
-                        MD.ListById();
-                        break;
-                    case "IN":
-                        MD.InsertRecord(QueryData(command));
-                        break;
-                    case "DI":
-                        MD.DeleteRecordByID(QueryData(command));
+                    case "LN":
                         break;
 
                     default:
-                        Console.WriteLine("No Valid Command found");
+                        Console.WriteLine("**ERROR: Command is not working");
                         break;
                 }
 
