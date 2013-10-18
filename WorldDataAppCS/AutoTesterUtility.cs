@@ -21,19 +21,19 @@ namespace WorldDataAppCS
             //      - N's to limit how many records to display during testing
             // The dataFileSuffix is used for RawData*.csv, MainData*.bin,
             //      NameIndexBackup*.bin, CodeIndexBackup*.bin
-            string[] dataFileSuffix = { "Just26", "Just26", "Dups", "" };
-            string[] transFileSuffix = { "Typical", "Empty", "ForDups", "" };
+            string[] dataFileSuffix = { "A3" };
+            string[] transFileSuffix = {  };
 
             //Delete the SINGLE output Log.txt file (if it exists)
             DeleteFile("Log.txt");
             for (int i = 0; i < dataFileSuffix.Length; i++)
             {
                 //Delete 3 other output files (if they exist)
-                DeleteFile("MainData.txt");
+                DeleteFile("IndexBackup.bin");
 
                
                 SetupProgram.SetupProgram.Main(new string[] { dataFileSuffix[i] });
-                UserApp.UserApp.Main(new string[] {transFileSuffix[i] });
+                UserApp.UserApp.Main(new string[] {});
                 PrettyPrintUtility.PrettyPrintUtility.Main(new string[] { dataFileSuffix[i]});
             }
         }

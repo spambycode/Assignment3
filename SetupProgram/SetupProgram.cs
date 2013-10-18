@@ -24,10 +24,8 @@ namespace SetupProgram
             }
             else
             {
-                fileNameSuffix = "Just26";
+                fileNameSuffix = "A3";
             }
-
-            DeleteFile("Maindata.txt");
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -36,29 +34,18 @@ namespace SetupProgram
             SharedClassLibrary.UserInterface UI = new UserInterface();
             SharedClassLibrary.RawData RD = new RawData(UI, FileName);
             SharedClassLibrary.MainData MD = new MainData(UI);
-            SharedClassLibrary.NameIndex NI = new NameIndex();
+            SharedClassLibrary.NameIndex NI = new NameIndex(MD, UI, false);
 
             UI.WriteToLog("\n***************Setup App Start***************\n");
             while (RD.ReadOneCountry() != true)
             {
-                if(NI.StoreOneCountry(RD))
-                {
-                    RecordSuccess++;
-                }
-                else
-                {
-                    RecordError++;
-                }
-
-                RecordCount++;
+                NI.StoreOneCountry(RD);
             }
-
-            UI.WriteToLog(string.Format("Setup complete: {0} Total records processed ({1} Successes and {2} Errors) ", 
-                            RecordCount, RecordSuccess, RecordError));
 
             UI.WriteToLog("\n***************Setup App END***************\n");
             MD.FinishUp();
             RD.FinishUp();
+            NI.FinishUp();
             UI.FinishUp(true, false);
 
 

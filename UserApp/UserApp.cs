@@ -37,6 +37,7 @@ namespace UserApp
 
             SharedClassLibrary.UserInterface UI = new UserInterface(true, true, transFileName);
             SharedClassLibrary.MainData MD = new MainData(UI);
+            SharedClassLibrary.NameIndex NI = new NameIndex(MD, UI, true);
 
             UI.WriteToLog("\n***************User App Start***************\n");
 
@@ -47,8 +48,11 @@ namespace UserApp
                 switch(command.Substring(0, 2))
                 {
                     case "QN":
+                        NI.QueryByName(QueryData(command));
                         break;
+                        
                     case "LN":
+                        NI.ListByName();
                         break;
 
                     default:
@@ -61,6 +65,7 @@ namespace UserApp
             }
 
             MD.FinishUp();
+            NI.FinishUp();
             UI.WriteToLog(string.Format("UserApp completed: {0} transactions handled", CommandCount));
             UI.WriteToLog("\n***************User App END***************\n");
             UI.FinishUp(true, true);

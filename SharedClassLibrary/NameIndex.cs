@@ -21,20 +21,24 @@ namespace SharedClassLibrary
         private FileStream _fIndexFile;
         private MainData _mainData;
         private UserInterface _log;
+        private short _rootPtr;
         //**************************** PUBLIC GET/SET METHODS **********************
 
 
         //**************************** PUBLIC CONSTRUCTOR(S) ***********************
-        public NameIndex(MainData MD, UserInterface log)
+        public NameIndex(MainData MD, UserInterface log, bool restoreTreeFromFile)
         {
             _mainData = MD;
             _log = log;
+            _rootPtr = -1;
             _tree = new object[1];
-            _tree[0] = -1;
 
             _fIndexFile = new FileStream("IndexBackup.bin", FileMode.OpenOrCreate);
             _bIndexFileW = new BinaryWriter(_fIndexFile);
             _bIndexFileR = new BinaryReader(_fIndexFile);
+
+            if (restoreTreeFromFile)
+                ReadTreeFile();
 
         }
         //**************************** PUBLIC SERVICE METHODS **********************
@@ -49,8 +53,9 @@ namespace SharedClassLibrary
             int parentIndex = 0;
             BSTNode currentNode = null;
 
-            if((int)_tree[0] == -1)
+            if (_rootPtr == -1)
             {
+                _rootPtr = _counter;
                 _tree[_counter++] = new BSTNode(RD);
             }
             else
@@ -58,7 +63,7 @@ namespace SharedClassLibrary
                 Array.Resize<Object>(ref _tree, _tree.Length + 1);
 
 
-                //Loop Through and find an empty location by name comparision
+                //Loop Through and find an empty location by name comparison
                 while (index != -1)
                 {
                     currentNode = (BSTNode)_tree[index];
@@ -100,7 +105,7 @@ namespace SharedClassLibrary
         /// <summary>
         /// Gets the the name by searching the tree.
         /// </summary>
-        /// <param name="queryID">Name that wants to be seached</param>
+        /// <param name="queryID">Name that wants to be searched</param>
         public void QueryByName(string queryID)
         {
             int queryCounter = 0;
@@ -109,7 +114,7 @@ namespace SharedClassLibrary
             BSTNode currentNode = null;
             string record = string.Empty;
 
-            if ((int)_tree[0] == -1)
+            if (_rootPtr == -1)
                 return;
 
             while (index != -1)
@@ -131,24 +136,43 @@ namespace SharedClassLibrary
                 {
                     index = currentNode.LChildPtr;
                 }
-
-                if (QueryFound == true)
-                {
-                    _log.WriteToLog(record);
-                }
-                else
-                    _log.WriteToLog("**Error:Could not find " + queryID);
-
-                _log.WriteToLog("[" + (--queryCounter) + " BST nodes visited]");
             }
 
+
+            if (QueryFound == true)
+            {
+                _log.WriteToLog(record);
+            }
+            else
+                _log.WriteToLog("**Error:Could not find " + queryID);
+
+            _log.WriteToLog("[" + (--queryCounter) + " BST nodes visited]");
+            
+
         }
+
+        //--------------------------------------------------------------------------------
+        /// <summary>
+        /// Lists 
+        /// </summary>
 
         public void ListByName()
         {
+            _log.WriteToLog(FormatHeader());
             IOT(0);
         }
 
+        //--------------------------------------------------------------------------------
+        /// <summary>
+        /// Closes files and saves the tree to the index file
+        /// </summary>
+        
+        public void FinishUp()
+        {
+            WriteTreeToFile();
+            _bIndexFileR.Close();
+            _bIndexFileW.Close();
+        }
         
 
         //**************************** PRIVATE METHODS *****************************
@@ -158,17 +182,17 @@ namespace SharedClassLibrary
         /// Recursive Structure that preforms a In-Order traversal of the tree and its leafs
         /// </summary>
         /// <param name="index">Index of the trees array</param>
-        private void IOT(int index)
+        private void IOT(int indexPtr)
         {
-           
-            if ((int)_tree[index] == -1)
+
+            if (_rootPtr == -1)
                 return;
-            else if (index == -1)
+            else if (indexPtr == -1)
                 return;
 
-            IOT(((BSTNode)_tree[index]).LChildPtr);
-            VisitNode((BSTNode)_tree[index]);
-            IOT(((BSTNode)_tree[index]).RChildPtr);
+            IOT(((BSTNode)_tree[indexPtr]).LChildPtr);
+            VisitNode((BSTNode)_tree[indexPtr]);
+            IOT(((BSTNode)_tree[indexPtr]).RChildPtr);
         }
 
         //------------------------------------------------------------------------------------
@@ -185,7 +209,7 @@ namespace SharedClassLibrary
 
         //-----------------------------------------------------------------------------------
         /// <summary>
-        /// Writes the current tree to a binary file that can be reinialized later
+        /// Writes the current tree to a binary file that can be reinitialized later
         /// </summary>
         private void WriteTreeToFile()
         {
@@ -193,6 +217,7 @@ namespace SharedClassLibrary
             _bIndexFileW.BaseStream.Seek(0, SeekOrigin.Begin);
 
             _bIndexFileW.Write(_counter); //Write header with record Count;
+            _bIndexFileW.Write(_rootPtr);
 
             foreach(object j in _tree)
             {
@@ -216,17 +241,33 @@ namespace SharedClassLibrary
             
             _bIndexFileR.BaseStream.Seek(0, SeekOrigin.Begin);
             _counter = _bIndexFileR.ReadInt16();
+            _rootPtr = _bIndexFileR.ReadInt16();
             _tree = new object[_counter];
 
             for(int i = 0; i < _counter; i++)
             {
-                lchild = _bIndexFileR.ReadInt16();
+                lchild   = _bIndexFileR.ReadInt16();
                 KeyValue = _bIndexFileR.ReadString();
-                DRP = _bIndexFileR.ReadInt16();
-                rchild = _bIndexFileR.ReadInt16();
+                DRP      = _bIndexFileR.ReadInt16();
+                rchild   = _bIndexFileR.ReadInt16();
 
                 _tree[i] = new BSTNode(lchild, KeyValue, DRP, rchild);
             }
+        }
+
+        //------------------------------------------------------------------------------
+        /// <summary>
+        /// Formates the header to be displayed
+        /// </summary>
+        /// <returns>A ready to use string aligned in its columns</returns>
+        private string FormatHeader()
+        {
+
+            return "CODE".PadRight(6) +
+                   "NAME".PadRight(18, '-') +
+                   "CONTINENT".PadRight(12, '-') +
+                   "POPULATION".PadLeft(12, '-').PadRight(13, '-') +
+                   "L.EX".PadRight(5).PadLeft(6);
         }
 
     }
