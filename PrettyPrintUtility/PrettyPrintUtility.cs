@@ -70,7 +70,7 @@ namespace PrettyPrintUtility
                 formatRecord = "[" + Convert.ToString(i).PadLeft(3, '0') + "]".PadRight(2) +
                                 Convert.ToString(lch).PadRight(5, '0') +
                                 Name.PadRight(18) +
-                                Convert.ToString(lch).PadLeft(2, '0').PadRight(12);
+                                Convert.ToString(lch).PadLeft(2, '0').PadRight(12) +
                                 Convert.ToString(rch).PadLeft(3, '0');
 
                 RecordCollection.Add(formatRecord);

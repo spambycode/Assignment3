@@ -96,9 +96,9 @@ namespace SharedClassLibrary
         {
             return new string(_code).PadRight(6) +
                    new string(_name).PadRight(18) +
-                   new string(_continent).PadRight(12) +
-                   string.Format("{0:#,###,###,###}", Convert.ToInt64(new string(_population))).PadLeft(13).PadRight(12) +
-                   string.Format("{0:0.0#}", Convert.ToSingle(new string(_lifeExpectancy))).PadRight(1).PadLeft(5);
+                   new string(_continent).PadLeft(15).PadRight(15) +
+                   string.Format("{0:#,###,###,###}", Convert.ToInt64(new string(_population))).PadLeft(15).PadRight(17) +
+                   string.Format("{0:0.0#}", Convert.ToSingle(new string(_lifeExpectancy))).PadRight(5).PadLeft(6);
         }
 
     }

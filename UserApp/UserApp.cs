@@ -35,7 +35,7 @@ namespace UserApp
 
             transFileName += transFileSuffix + ".txt";
 
-            SharedClassLibrary.UserInterface UI = new UserInterface(true, true, transFileName);
+            SharedClassLibrary.UserInterface UI = new UserInterface(true, true);
             SharedClassLibrary.MainData MD = new MainData(UI);
             SharedClassLibrary.NameIndex NI = new NameIndex(MD, UI, true);
 

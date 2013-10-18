@@ -153,13 +153,13 @@ namespace SharedClassLibrary
 
         //--------------------------------------------------------------------------------
         /// <summary>
-        /// Lists 
+        /// Lists Countries in alphabetical order.
         /// </summary>
 
         public void ListByName()
         {
             _log.WriteToLog(FormatHeader());
-            IOT(0);
+            IOT(_rootPtr);
         }
 
         //--------------------------------------------------------------------------------
@@ -185,9 +185,7 @@ namespace SharedClassLibrary
         private void IOT(int indexPtr)
         {
 
-            if (_rootPtr == -1)
-                return;
-            else if (indexPtr == -1)
+           if (indexPtr == -1)
                 return;
 
             IOT(((BSTNode)_tree[indexPtr]).LChildPtr);
@@ -265,9 +263,10 @@ namespace SharedClassLibrary
 
             return "CODE".PadRight(6) +
                    "NAME".PadRight(18, '-') +
-                   "CONTINENT".PadRight(12, '-') +
-                   "POPULATION".PadLeft(12, '-').PadRight(13, '-') +
-                   "L.EX".PadRight(5).PadLeft(6);
+                   "CONTINENT".PadLeft(11).PadRight(15, '-') + 
+                   string.Empty.PadLeft(2) +
+                   "POPULATION".PadLeft(13, '-').PadRight(15) +
+                   "L.EXP".PadRight(5).PadLeft(6);
         }
 
     }
