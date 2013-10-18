@@ -28,7 +28,6 @@ namespace WorldDataAppCS
             DeleteFile("Log.txt");
             for (int i = 0; i < dataFileSuffix.Length; i++)
             {
-                //Delete 3 other output files (if they exist)
                 DeleteFile("IndexBackup.bin");
 
                

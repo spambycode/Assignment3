@@ -30,7 +30,7 @@ namespace PrettyPrintUtility
         public static void Main(string[] args)
         {
 
-            fMainDataFile = new FileStream("IndexBackup.bin", FileMode.Open);
+            fMainDataFile = new FileStream("IndexBackup.bin", FileMode.OpenOrCreate);
             bMainDataFileReader = new BinaryReader(fMainDataFile);
             recordCount = bMainDataFileReader.ReadInt16();
             RootPtr = bMainDataFileReader.ReadInt16();
@@ -56,6 +56,8 @@ namespace PrettyPrintUtility
             short lch, rch, drp;
             string Name;
 
+            string lch_pad, rch_pad;
+
             string formatRecord;
             List<string> RecordCollection = new List<string>(); //List of formatted record strings
 
@@ -67,11 +69,21 @@ namespace PrettyPrintUtility
                 drp  = fileReader.ReadInt16();
                 rch  = fileReader.ReadInt16();
 
+                if (lch == -1)
+                    lch_pad = lch.ToString("D2");
+                else
+                    lch_pad = lch.ToString("D3");
+
+                if (rch == -1)
+                    rch_pad = rch.ToString("D2");
+                else
+                    rch_pad = rch.ToString("D3");
+
                 formatRecord = "[" + Convert.ToString(i).PadLeft(3, '0') + "]".PadRight(2) +
-                                Convert.ToString(lch).PadRight(5, '0') +
+                                lch_pad.PadRight(5) +
                                 Name.PadRight(18) +
-                                Convert.ToString(lch).PadLeft(2, '0').PadRight(12) +
-                                Convert.ToString(rch).PadLeft(3, '0');
+                                drp.ToString("D3").PadLeft(4).PadRight(6) +
+                                rch_pad.PadLeft(3);
 
                 RecordCollection.Add(formatRecord);
             }
@@ -104,7 +116,7 @@ namespace PrettyPrintUtility
             return "[SUB]".PadRight(6) +
                    "LCH".PadRight(5) +
                    "NAME".PadRight(18, '-') +
-                   "DRP".PadLeft(2).PadRight(12) +
+                   "DRP".PadLeft(4).PadRight(6) +
                    "RCH";
         }
 

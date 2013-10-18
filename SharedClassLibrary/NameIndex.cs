@@ -144,9 +144,12 @@ namespace SharedClassLibrary
                 _log.WriteToLog(record);
             }
             else
+            {
                 _log.WriteToLog("**Error:Could not find " + queryID);
+                --queryCounter;
+            }
 
-            _log.WriteToLog("[" + (--queryCounter) + " BST nodes visited]");
+            _log.WriteToLog("[" + (queryCounter) + " BST nodes visited]");
             
 
         }
@@ -160,6 +163,7 @@ namespace SharedClassLibrary
         {
             _log.WriteToLog(FormatHeader());
             IOT(_rootPtr);
+            _log.WriteToLog(""); //Create some space in-between in log.
         }
 
         //--------------------------------------------------------------------------------

@@ -56,7 +56,7 @@ namespace UserApp
                         break;
 
                     default:
-                        Console.WriteLine("**ERROR: Command is not working");
+                        UI.WriteToLog("**ERROR: Command is not working");
                         break;
                 }
 
@@ -66,8 +66,8 @@ namespace UserApp
 
             MD.FinishUp();
             NI.FinishUp();
-            UI.WriteToLog(string.Format("UserApp completed: {0} transactions handled", CommandCount));
             UI.WriteToLog("\n***************User App END***************\n");
+            UI.WriteToLog(string.Format("UserApp completed: {0} transactions handled", CommandCount));
             UI.FinishUp(true, true);
 
 

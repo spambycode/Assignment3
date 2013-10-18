@@ -14,8 +14,6 @@ namespace SetupProgram
         public static void Main(string[] args)
         {
             int RecordCount   = 0;
-            int RecordSuccess = 0;
-            int RecordError   = 0;
 
             string fileNameSuffix;
             if (args.Length > 0)
@@ -39,9 +37,11 @@ namespace SetupProgram
             UI.WriteToLog("\n***************Setup App Start***************\n");
             while (RD.ReadOneCountry() != true)
             {
+                ++RecordCount;
                 NI.StoreOneCountry(RD);
             }
 
+            UI.WriteToLog("Setup completed " + RecordCount + " records process");
             UI.WriteToLog("\n***************Setup App END***************\n");
             MD.FinishUp();
             RD.FinishUp();
