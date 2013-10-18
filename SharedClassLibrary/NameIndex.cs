@@ -107,6 +107,7 @@ namespace SharedClassLibrary
             int index = 0;
             bool QueryFound = false;
             BSTNode currentNode = null;
+            string record = string.Empty;
 
             if ((int)_tree[0] == -1)
                 return;
@@ -118,27 +119,27 @@ namespace SharedClassLibrary
 
                 if(currentNode.CompareTo(queryID) == 0)
                 {
-                    //MainData GetData
-                    //Log(queryCounter Shit)
+                    record = _mainData.GetThisData(currentNode.DRP);
                     QueryFound = true;
+                    index = -1;
                 }
                 else if (currentNode.CompareTo(queryID) > 0)
                 {
-
                     index = currentNode.RChildPtr;
-                    //RightNode Child
                 }
                 else 
                 {
                     index = currentNode.LChildPtr;
-                    //LeftNode Child
                 }
 
-                if (QueryFound == false)
-                { }
-                    //Log Error nothing was found mathching
+                if (QueryFound == true)
+                {
+                    _log.WriteToLog(record);
+                }
+                else
+                    _log.WriteToLog("**Error:Could not find " + queryID);
 
-                    //Log QueryShit counter stuff
+                _log.WriteToLog("[" + (--queryCounter) + " BST nodes visited]");
             }
 
         }

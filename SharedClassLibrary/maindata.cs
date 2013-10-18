@@ -118,7 +118,7 @@ namespace SharedClassLibrary
         /// Formates the header to be displayed
         /// </summary>
         /// <returns>A ready to use string aligned in its columns</returns>
-        private static string FormatHeader()
+        private string FormatHeader()
         {
 
             return "CODE".PadRight(6) +
@@ -126,41 +126,6 @@ namespace SharedClassLibrary
                    "CONTINENT".PadRight(12, '-') +
                    "POPULATION".PadLeft(12, '-').PadRight(13, '-') +
                    "L.EX".PadRight(5).PadLeft(6);
-        }
-
-        //--------------------------------------------------------------------------
-        /// <summary>
-        /// Writes one country to the file by the given byteOffSet
-        /// </summary>
-        /// <param name="byteOffSet">Where in the file to begin the writing process</param>
-        private void WriteOneCountry(int byteOffSet)
-        {
-
-            if(mainDataFile.BaseStream.Length < byteOffSet)
-                mainDataFile.BaseStream.SetLength(byteOffSet);
-
-            //Move file pointer to new location
-            mainDataFile.BaseStream.Seek(byteOffSet, SeekOrigin.Begin);
-
-            //Write the information to the maindata file
-            
-            WriteOneRecord(_code);
-            WriteOneRecord(_name);
-            WriteOneRecord(_continent);
-            WriteOneRecord(_population);
-            WriteOneRecord(_lifeExpectancy);
-
-        }
-
-        //-------------------------------------------------------------------------------
-        /// <summary>
-        /// Uses the write function in file stream to write a record to the main file
-        /// </summary>
-        /// <param name="input">Input wanted to write to file</param>
-
-        private void WriteOneRecord(char[] input)
-        {
-            mainDataFile.Write(Encoding.ASCII.GetBytes(input), 0, input.Length);
         }
 
     }
