@@ -1,4 +1,4 @@
-﻿/* PROJECT:  Asign 1 (C#)            PROGRAM: UserApp
+﻿/* PROJECT:  Asign 3 (C#)            PROGRAM: UserApp
  * AUTHOR: George Karaszi   
  *******************************************************************************/
 
@@ -21,7 +21,7 @@ namespace UserApp
 
             int CommandCount        = 0;
             string transFileSuffix = "";
-            string transFileName = "TransData";
+            string transFileName = "TransDataA3";
             string command = "";
 
             if(args.Length > 0)
@@ -35,7 +35,7 @@ namespace UserApp
 
             transFileName += transFileSuffix + ".txt";
 
-            SharedClassLibrary.UserInterface UI = new UserInterface(true, true);
+            SharedClassLibrary.UserInterface UI = new UserInterface(true, true, transFileName);
             SharedClassLibrary.MainData MD = new MainData(UI);
             SharedClassLibrary.NameIndex NI = new NameIndex(MD, UI, true);
 

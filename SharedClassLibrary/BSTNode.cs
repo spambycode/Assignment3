@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* PROJECT:  Asign 3 (C#)            PROGRAM: SetupProgram
+ * AUTHOR: George Karaszi   
+ * USEAGE: To store information in a class data structure. While maintaing 
+ *         proper BST child pointers
+ *******************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

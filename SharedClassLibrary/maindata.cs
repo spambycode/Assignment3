@@ -1,4 +1,4 @@
-﻿/* PROJECT:  Asign 1 (C#)            PROGRAM: MainData class
+﻿/* PROJECT:  Asign 3 (C#)            PROGRAM: MainData class
  * AUTHOR: George Karaszi   
  *******************************************************************************/
 
@@ -50,6 +50,12 @@ namespace SharedClassLibrary
 
         //**************************** PUBLIC SERVICE METHODS **********************
 
+        //------------------------------------------------------------------------
+        /// <summary>
+        /// Gets data from the main data file
+        /// </summary>
+        /// <param name="RRN">Location in main data of the record</param>
+        /// <returns>A formatted string with the results of the query</returns>
         public string GetThisData(int RRN)
         {
             int ByteOffSet = CalculateByteOffSet(RRN);

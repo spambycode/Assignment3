@@ -1,8 +1,7 @@
-﻿/* PROJECT: Asign 2 (C#) PROGRAM: PrettyPrint (AKA ShowFilesUtility)
-* AUTHOR: George Karaszi 10-4-2013
+﻿/* PROJECT: Asign 3 (C#) PROGRAM: PrettyPrint (AKA ShowFilesUtility)
+* AUTHOR: George Karaszi 10-24-2013
 * FILE ACCESSED:
-* (INPUT) MainData.bin
-* (INPUT) MainDataCollisions.bin
+* (INPUT) IndexBackup.bin
 * (OUTPUT) log.txt
 *
 * USEAGE: To access and showcase the data stored within binaray files.

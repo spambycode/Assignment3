@@ -1,4 +1,4 @@
-﻿/* PROJECT:  Asign 1 (C#)            PROGRAM: RawData class
+﻿/* PROJECT:  Asign 3 (C#)            PROGRAM: RawData class
  * AUTHOR: George Karaszi   
  *******************************************************************************/
 
@@ -54,7 +54,7 @@ namespace SharedClassLibrary
                 var split = line.Split(',');
 
 
-                //Asign varaibles from the read record
+                //Asign variables from the read record
                 ID   = split[0];
                 CODE = split[1];
                 NAME = split[2];

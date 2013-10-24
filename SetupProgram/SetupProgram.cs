@@ -1,4 +1,4 @@
-﻿/* PROJECT:  Asign 1 (C#)            PROGRAM: SetupProgram
+﻿/* PROJECT:  Asign 3 (C#)            PROGRAM: SetupProgram
  * AUTHOR: George Karaszi   
  *******************************************************************************/
 

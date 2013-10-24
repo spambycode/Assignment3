@@ -1,9 +1,10 @@
-﻿/* PROJECT: WorldDataAppCS (C#)         CLASS: NameIndex
- * AUTHOR:
- * FILES ACCESSED:
- * INTERNAL INDEX STRUCTURE: 
- * FILE STRUCTURE: 
- * DESCRIPTION:
+﻿/* PROJECT: Asign 3 (C#)         CLASS: NameIndex
+ * AUTHOR: George Karaszi
+ * FILES ACCESSED:(INPUT/OUTPUT)Indexbackup.bin
+ * INTERNAL INDEX STRUCTURE: BST
+ * DESCRIPTION: Creates an array of said object in a BST tree formate. Has the 
+ *              ability to search and locate data stored with in each node. 
+ *              As well as traversing the tree in a IOT order.
 *******************************************************************************/
 
 using System;

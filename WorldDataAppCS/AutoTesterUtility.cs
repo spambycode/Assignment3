@@ -1,4 +1,4 @@
-﻿/* PROJECT:  Asign 1 (C#)            PROGRAM: AutoTesterUtility
+﻿/* PROJECT:  Asign 3 (C#)            PROGRAM: AutoTesterUtility
  * AUTHOR: George Karaszi   
  *******************************************************************************/
 
@@ -26,15 +26,13 @@ namespace WorldDataAppCS
 
             //Delete the SINGLE output Log.txt file (if it exists)
             DeleteFile("Log.txt");
-            for (int i = 0; i < dataFileSuffix.Length; i++)
-            {
-                DeleteFile("IndexBackup.bin");
+            DeleteFile("IndexBackup.bin");
 
                
-                SetupProgram.SetupProgram.Main(new string[] { dataFileSuffix[i] });
+                SetupProgram.SetupProgram.Main(new string[] { dataFileSuffix[0] });
+                PrettyPrintUtility.PrettyPrintUtility.Main(new string[] { dataFileSuffix[0] });
                 UserApp.UserApp.Main(new string[] {});
-                PrettyPrintUtility.PrettyPrintUtility.Main(new string[] { dataFileSuffix[i]});
-            }
+                PrettyPrintUtility.PrettyPrintUtility.Main(new string[] { dataFileSuffix[0]});
         }
         //**************************************************************************
         private static bool DeleteFile(String fileName)
